@@ -1,0 +1,160 @@
+<span *ngIf="agents;else loading">
+    <span *ngIf="agents.length!=0; else agentNotFound">
+        <span *ngFor="let instance of agents">
+
+            <h4 class="text-center">{{instance?.id | uppercase}}
+
+            </h4>
+            <p class="text-center">
+                <span *ngFor="let r of cdr">
+                    <span class="cdr-badge" *ngIf="instance?.id==r">Core Data Resource</span>
+                </span></p>
+            <p class="text-center">
+                <small>
+                    <a href="{{selectedValue['web']['homepage']}}">{{selectedValue['web']['homepage']}}</a>
+                </small>
+            </p>
+
+            <p class="text-center">
+                <span *ngFor="let source of sources" (click)="sourceHref(source,instance?.id)"
+                    ngClass="badge-no-color false-link">{{source}}
+                </span>
+            </p>
+
+            <p>
+                <p ngClass="{{instance.metrics?.project?.website?  '' : 'hide-metric'}}">
+                    <b>Accessibility :</b>
+                    <span
+                        ngClass="{{instance.metrics?.project?.website?  '' : 'hide-metric'}} {{instance.metrics?.project?.website?.bioschemas? 'metrics-true' : 'metrics-false'}}">
+                        Bioschema
+                    </span>
+                    <span
+                        ngClass="{{instance.metrics?.project?.website?  '' : 'hide-metric'}} {{instance.metrics?.project?.website?.ssl? 'metrics-true' : 'metrics-false'}}">
+                        SSL
+                    </span>
+
+                <p
+                    ngClass="{{instance.metrics?.distribution? '' : 'hide-metric'}}">
+                    <b>Distribution : </b>
+                    <span
+                        ngClass="{{instance.metrics?.distribution? '' : 'hide-metric'}} {{instance.metrics?.distribution?.vre? '' : 'hide-metric'}} {{instance.metrics?.distribution?.vre? 'metrics-true' : 'metrics-false'}}">VRE</span>
+                    <span
+                        ngClass="{{instance.metrics?.distribution? '' : 'hide-metric'}} {{instance.metrics?.distribution?.sourcecode? '' : 'hide-metric'}} {{instance.metrics?.distribution?.sourcecode? 'metrics-true' : 'metrics-false'}}">Sourcecode</span>
+            </p>
+
+            <mat-tab-group (selectedTabChange)="onTabChange($event)">
+                <span *ngFor="let entity of instance.entities">
+
+                    <mat-tab *ngIf="entity.type!=null">
+                        <ng-template mat-tab-label>
+                            {{entity.type | uppercase}}
+                        </ng-template>
+                        <ng-template matTabContent>
+
+                            <b> Version : </b>
+                            <mat-form-field>
+                                <mat-select [(ngModel)]="selectedValue" [ngModelOptions]="{standalone: true}"
+                                    (selectionChange)="onVersionChange($event)">
+                                    <mat-option *ngFor="let agent of entity.agents" [value]="agent">
+                                        {{agent['@version']? agent['@version'] : 'N/A'}}</mat-option>
+                                </mat-select>
+
+                            </mat-form-field>
+
+
+                            <p class="card-group alert alert-warning text-center" *ngIf="selectedValue.depricated">This
+                                version of
+                                the resource is deprecated or has been deleted
+                                from the original
+                                entry</p>
+
+
+                            <div class="card-group">
+                                <div class="card border-light">
+
+                                    <p><b> Description : </b>{{selectedValue.description}}</p>
+                                    <span *ngIf="selectedValue.depricated=='true'">
+                                        <p>{{selectedValue.depricated}}</p>
+                                    </span>
+                                    <span>
+                                        <p><b>OS : </b> <span *ngIf="selectedValue.os;else notavailable"> <span
+                                                    *ngFor="let os of selectedValue.os">{{os}} </span></span>
+                                        </p>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div *ngIf="selectedValue.documentation || selectedValue.license" class="card border-light">
+                                <p ngClass="{{selectedValue.documentation? '' : 'hide-metric'}} ">
+                                    <b>Documentation : </b>
+                                    <span
+                                        ngClass="{{selectedValue.documentation? '' : 'hide-metric'}} {{selectedValue.documentation?.manual? 'metrics-true' : 'metrics-false'}}">Manual</span>
+                                    <span
+                                        ngClass="{{selectedValue.documentation? '' : 'hide-metric'}} {{selectedValue.documentation?.general? 'metrics-true' : 'metrics-false'}}">General</span>
+                                    <span
+                                        ngClass="{{selectedValue.documentation? '' : 'hide-metric'}} {{selectedValue.documentation?.faq? 'metrics-true' : 'metrics-false'}}">FAQ</span>
+                                    <span
+                                        ngClass="{{selectedValue.documentation? '' : 'hide-metric'}} {{selectedValue.documentation?.terms_of_use? 'metrics-true' : 'metrics-false'}}">Terms
+                                        of use</span>
+
+                                <p ngClass="{{selectedValue.license?  '' : 'hide-metric'}}">
+                                    <b>License:</b>
+                                    <span class="badge-no-color">{{selectedValue.license}}</span>                                                          
+                            </div>
+                            <hr>
+                            <div class="card-group">
+                                <div class=" card border-light ">
+                                    <h3 id="Uptime" class="card-title ">Uptime / Accesstime</h3>
+                                    <h1></h1>
+                                    <small class="card-subtitle mb-2 text-muted ">Displays if the service is currently
+                                        available</small>
+    
+                                    <div data-id="uptime" data-xaxis='true'
+                                        attr.data-url="{{selectedValue['@id'] | chartId}}" data-limit=14
+                                        class="opebuptime " #opebuptime>
+    
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card-group">
+                                <div class="card border-light ">
+                                    <h3 id="Publication" class="card-title ">Publications</h3>
+                                    <small class="card-subtitle mb-2 text-muted ">Amount of citations for each of the
+                                        publications</small>
+    
+    
+                                    <span *ngIf="selectedValue.publications ">
+                                        <div *ngIf="selectedValue.publications.length<=0 ">
+                                            <p class="text-center ">No publications found for this version</p>
+                                        </div>
+                                    </span>
+                                    <!-- <p>{{selectedValue['@id'] | chartId}}</p> -->
+                                    <div data-id="citation" data-h="400" data-legend="true"
+                                        attr.data-url="{{selectedValue['@id'] | chartId}}" class="opebcitations"
+                                        #opebcitations>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <small>
+                                * If no publications are available for this version of the please select a different
+                                version
+                            </small>
+                        </ng-template>
+                    </mat-tab>
+                </span>
+            </mat-tab-group>
+        </span>
+    </span>
+</span>
+
+<br>
+<br>
+
+
+<ng-template #loading>
+    <mat-spinner></mat-spinner>
+</ng-template>
+<ng-template #agentNotFound>Agent Not Found</ng-template>
+<ng-template #notavailable> N/A </ng-template>

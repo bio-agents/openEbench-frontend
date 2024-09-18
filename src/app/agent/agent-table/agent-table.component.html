@@ -1,0 +1,78 @@
+<span *ngIf='agents;else loading'>
+
+
+  <div>
+    <form [formGroup]="search" novalidate>
+
+      <mat-form-field>
+        <input matInput autofocus placeholder="Filter" value="{{filterValue!=null? filterValue : ''}}" type="text"
+          formControlName='text'>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Search in " id="select" formControlName='filter' disableOptionCentering>
+          <mat-option *ngFor="let option of options" [value]="option"> {{option}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-select placeholder="Type" formControlName="type" multiple matAgenttip="Filter by type of agent"
+          disableOptionCentering>
+          <mat-option *ngFor="let type of typeList" [value]="type" aria-selected="true">{{type | uppercase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Edam" value="{{edamFilterValue!=null? edamFilterValue : ''}}" type="text"
+          formControlName='label'>
+      </mat-form-field>
+
+
+      <button mat-raised-button type="submit" color="primary" (click)='submitForm()' [disabled]="!search.valid" matAgenttip="Go"
+        matAgenttipPosition="right">Search Agent</button>
+    </form>
+  </div>
+
+
+  <div class=" " *ngIf="agents.length > 0;else noentriesfound">
+
+    <!-- <button mat-raised-button (click)="sidenav.toggle()"><i class="material-icons">tune</i></button>       -->
+    <mat-table #table [dataSource]="agents" class="table-content">
+
+
+
+      <ng-container matColumnDef="agent-card">
+
+        <mat-cell class="" *matCellDef="let agent">
+          <div class="table-fields">
+
+            <a routerLink={{agent.id}} name="{{agent.id}}" matAgenttip="{{agent.id}} details"
+              matAgenttipPosition="right">{{agent.id}}</a>
+            <span *ngFor="let r of cdr">
+              <span class="cdr-badge" *ngIf="agent.id==r">Core Data Resource</span>
+            </span>
+            <p class="table-desc"><span>{{agent.entities[0].agents[0]['description']}}</span>
+            </p>
+
+            <span *ngFor="let entity of agent.entities"> {{entity.type | uppercase}}</span>
+            <p><a target="_blank" href="{{agent.entities[0].agents[0]['web']['homepage']}}"
+                matAgenttip="Visit agent homepage" matAgenttipPosition="right">Website</a></p>
+            <p appOnIteration="getMetricsForAgent(agent.id)"></p>
+          </div>
+        </mat-cell>
+      </ng-container>
+      <mat-row *matRowDef="let row; columns: ['agent-card'];"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[10,20,50]"
+      (page)="changePage($event)">
+    </mat-paginator>
+  </div>
+
+
+</span>
+<ng-template #loading>
+  <mat-spinner></mat-spinner>
+</ng-template>
+<ng-template #noentriesfound>No entries found</ng-template>

@@ -1,0 +1,51 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white">
+    <a
+        [hidden]="getPath()"
+        [routerLink]="dashboardLink.path"
+        class="navbar-brand"
+    >
+        <img width="100px" src="assets/img/opeb_logo.gif" alt="OpEB" />
+    </a>
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto" *ngFor="let link of navLinks">
+            <li *ngIf="link.path != ''" class="nav-item">
+                <a
+                    [routerLink]="link.path"
+                    [ngClass]="{'btn btn-primary' : link.isBtn,
+                                'nav-link' : !link.isBtn}"
+                    >{{ link.label }}
+                </a>
+            </li>
+            <li *ngIf="link.path == '' && link.label != 'Docs'" class="nav-item">
+                <a
+                    href="{{ link.href }}"
+                    target="_blank"
+                    class="nav-link"
+                    >{{ link.label }} &nbsp;</a
+                >
+            </li>
+            <li *ngIf="link.path == '' && link.label == 'Docs'" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ link.label }}</a>
+                <div class="dropdown-menu"  aria-labelledby="navbarDropdown" style="border:0 !important">
+                    <a
+                        href="{{ subdoc.href }}" target="_blank"
+                        *ngFor="let subdoc of navDocs"
+                        class="dropdown-item"
+                        >{{ subdoc.label }}
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

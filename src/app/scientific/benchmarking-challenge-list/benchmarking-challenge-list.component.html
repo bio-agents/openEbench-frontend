@@ -1,0 +1,91 @@
+<span *ngIf="challengeGraphql; else loading">
+    <span *ngIf="challengeGraphql.getChallenges.length > 1">
+        <h3 class="h5">Summary table of all challenges of an Event</h3>
+        <p>
+            Challenges are different tests that the community uses to
+            benchmark their participants within a benchmarking event
+        </p>
+        <div>
+            <div
+                class="oeb-table"
+                attr.data-benchmarkingevent="{{ beventsid }}"
+                [attr.data-mode]="isProduction ? 'openebench' : 'dev-openebench'"
+                attr.data-api-url="{{ SCIENTIFIC_SERVICE_URL }}"
+                attr.data-bench-event-api-url="{{ BENCH_EVENT_API_URL }}"
+            ></div>
+            <br />
+            <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="filterChallenges(beventsid)"
+                matAgenttip="Reload chart after selecting Challenges"
+                matAgenttipPosition="right"
+            >
+                Update chart
+            </button>
+        </div>
+    </span>
+</span>
+
+<br />
+<span *ngIf="challengeGraphql; else loading">
+    <h4 class="h6 mt-4 mb-3">Here you can select challenges for filtering your results:</h4>
+    <span>
+        <table
+            datatable
+            [dtOptions]="dtOptions"
+            [dtTrigger]="challengeTrigger"
+            class="row-border hover"
+        >
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Acronym( Chart )</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let b of challengeGraphql.getChallenges">
+                    <td>
+                        <mat-checkbox
+                            color="primary"
+                            id="{{ b._id }}"
+                            value="{{ b._id }}"
+                            (change)="toogle($event, b._id)"
+                        >
+                        </mat-checkbox>
+                    </td>
+                    <td>
+                        <a
+                            routerLink="{{ b._id }}"
+                            name="{{ b._id }}"
+                            matAgenttip="{{ b._id }}"
+                            matAgenttipPosition="right"
+                            >[{{ b.acronym }}]</a
+                        >
+                    </td>
+                    <td>{{ b.name }}</td>
+
+                    <!-- <td>{{ d.type }}</td> -->
+                </tr>
+            </tbody>
+        </table>
+
+        <button
+        *ngIf="challengeGraphql.getChallenges.length > 1"
+        type="submit"
+        class="btn btn-primary mb-3"
+        (click)="filterChallenges(beventsid)"
+        matAgenttip="Reload chart after selecting Challenges"
+        matAgenttipPosition="right"
+        >
+            Update chart
+        </button>
+        <!-- <p> here : {{selectedChallenges}}</p> -->
+    </span>
+
+    <!-- <mat-paginator [length]=length [pageIndex]=pageIndex [pageSize]=pageSize [pageSizeOptions]=[10,20] (page)="changePage($event)">
+        </mat-paginator> -->
+</span>
+
+<ng-template #loading>loading...</ng-template>

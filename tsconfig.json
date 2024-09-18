@@ -1,0 +1,37 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": ".",
+        "downlevelIteration": true,
+        "importHelpers": true,
+        "module": "esnext",
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es2015",
+        "lib": ["es2018", "dom", "esnext.asynciterable"],
+        "paths": {
+            "ng-fancy-lib": ["dist/ng-fancy-lib"],
+            "stream": [
+                "node_modules/stream-browserify"
+            ],
+            "http": [
+                "node_modules/stream-http"
+            ],
+            "https": [
+                "node_modules/https-browserify"
+            ],
+            "process": [
+                "node_modules/process"
+            ]
+        },
+	"allowSyntheticDefaultImports": true
+    },
+    "angularCompilerOptions": {
+	    "fullTemplateTypeCheck": true,
+	    "strictInjectionParameters": true
+    }
+}
