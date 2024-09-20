@@ -1,7 +1,3 @@
-{
-  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/lib",
-  "lib": {
-    "entryFile": "src/public_api.ts"
-  }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:fe5be47c51a766a0950af3f60c89588f7d45cb3127948661b5d4adb41c0ace3b
+size 152
